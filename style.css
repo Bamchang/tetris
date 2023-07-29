@@ -1,0 +1,14 @@
+#game-board {
+  position: relative;
+  height: 600px;
+  width: 300px;
+  border: 1px solid black;
+}
+
+.block {
+  background-color: #F00;
+}
+
+.fixed {
+  background-color: blue;
+}
