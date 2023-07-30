@@ -3,7 +3,7 @@ let squares = Array.from(document.querySelectorAll('.grid div'));
 
 //ゲームボードの定義
 const gameBoard = document.getElementById('game-board');
-const board = [];
+let   board = [];
 const boardWidth = 10;  // 10 columns
 const boardHeight = 20; // 20 rows
 
@@ -108,7 +108,7 @@ function erase() {
 }
 
 //衝突判定
-function checkForCollision() {
+function canBlockMove() {
     for(let y = 0; y < current.length; y++) {
         for(let x = 0; x < current[y].length; x++) {
             // ブロックが存在しない部分はスキップ
@@ -120,7 +120,7 @@ function checkForCollision() {
             let newX = currentPosition.x + x;
             let newY = currentPosition.y + y;
             
-            //ブロックがステージの端を超えてしまったかチェック
+            //ブロックがステージの横端を超えてしまったかチェック
             if(newX < 0 || newX >= boardWidth){
                 return true;
             }
@@ -131,7 +131,7 @@ function checkForCollision() {
             }
 
             // 新しいブロックの位置に他のブロックが存在しているかチェック
-            if(board[newY][newX] !== undefined && board[newY][newX].classList.contains('fixed')) {
+            if(board[newY][newX].classList.contains('fixed')) {
                 return true;
             }
         }
@@ -148,10 +148,11 @@ function moveDown() {
     currentPosition.y++;
 
     // 衝突判定
-    if(checkForCollision()) {
+    if(canBlockMove()) {
         // 衝突があった場合はブロックの位置を一つ戻し、固定する
         currentPosition.y--;
         fixBlock();
+        deleteFixedLineBlocks();
 
         // 新しいブロックを生成
         currentPosition = {x: 4, y: 0};
@@ -182,8 +183,43 @@ function fixBlock() {
 function deleteFixedLineBlocks(){
     tmpBoard = board;
 
+    deletedLineHeights = []//削除された列の番号を記録する
+    let IsThereLine = false;
+    for(let height = boardHeight - 1; height >= 0; height--) {
+        //console.log(IsThereLine);
+        //console.log(height);
+        IsThereLine = false;
+        IsThereLine = tmpBoard[height].every((boardElement) => {return boardElement.classList.contains('fixed');});
+        //lineができてたとき
+        if(IsThereLine){
+            tmpBoard[height].forEach((boardElement) => {boardElement.classList.remove('fixed');});
+            deletedLineHeights.push(height);
+        }
+    }
+
+    //一旦ラインを消した後を描画
+    board = tmpBoard;
+    let numDown = 0;
+    //console.log(deletedLineHeight);
     
-    
+    for(let height = boardHeight - 1; height >= 0; height--) {
+        numDown = 0;//ダルマ落とし的に下に移動させる数
+        deletedLineHeights.forEach((lineHeight) => {if(height < lineHeight){numDown++;}});
+        //console.log(`line height ${numDown}`);
+        if(numDown > 0){
+            tmpBoard[height].forEach((boardElement, index) => {
+                if(boardElement.classList.contains("fixed") && !(tmpBoard[height + numDown][index].classList.contains("fixed"))){
+                    tmpBoard[height + numDown][index].classList.add("fixed");
+                }
+                else if(!(boardElement.classList.contains("fixed")) && tmpBoard[height + numDown][index].classList.contains("fixed")){
+                    tmpBoard[height + numDown][index].classList.remove("fixed");
+                }
+                boardElement.classList.remove("fixed");    
+            });
+        
+        }
+    }
+    board = tmpBoard;
 }
 
 
@@ -206,7 +242,7 @@ function  rotateBlock_clockwise() {
     tmp = current;
     current = rotatedBlock;
     // 衝突判定
-    if(checkForCollision()) {
+    if(canBlockMove()) {
     // 衝突があった場合は回転取り消し
         
             // 新しいブロックを描画
@@ -227,7 +263,7 @@ function moveRight() {
     currentPosition.x++;
 
     // 衝突判定
-    if(checkForCollision()) {
+    if(canBlockMove()) {
         // 衝突があった場合はブロックの位置を一つ戻し、固定する
         currentPosition.x--;
         // 新しいブロックを描画
@@ -246,7 +282,7 @@ function moveLeft() {
     currentPosition.x--;
 
     // 衝突判定
-    if(checkForCollision()) {
+    if(canBlockMove()) {
         // 衝突があった場合はブロックの位置を一つ戻し、固定する
         currentPosition.x++;
         // 新しいブロックを描画
