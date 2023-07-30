@@ -107,6 +107,86 @@ function erase() {
     });
 }
 
+//衝突判定
+function checkForCollision() {
+    for(let y = 0; y < current.length; y++) {
+        for(let x = 0; x < current[y].length; x++) {
+            // ブロックが存在しない部分はスキップ
+            if(current[y][x] === 0) {
+                continue;
+            }
+
+            // 新しいブロックの位置
+            let newX = currentPosition.x + x;
+            let newY = currentPosition.y + y;
+            
+            //ブロックがステージの端を超えてしまったかチェック
+            if(newX < 0 || newX >= boardWidth){
+                return true;
+            }
+
+            // 新しいブロックがゲームボードの底に触れているかチェック
+            if(newY >= boardHeight) {
+                return true;
+            }
+
+            // 新しいブロックの位置に他のブロックが存在しているかチェック
+            if(board[newY][newX] !== undefined && board[newY][newX].classList.contains('fixed')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+function moveDown() {
+    // 現在のブロックを消去
+    erase();
+
+    // ブロックの位置を更新
+    currentPosition.y++;
+
+    // 衝突判定
+    if(checkForCollision()) {
+        // 衝突があった場合はブロックの位置を一つ戻し、固定する
+        currentPosition.y--;
+        fixBlock();
+
+        // 新しいブロックを生成
+        currentPosition = {x: 4, y: 0};
+        random = Math.floor(Math.random() * tetrominoes.length);
+        current = tetrominoes[random];
+
+        // 新しいブロックを描画
+        draw();
+    } else {
+        // 衝突がなければブロックを描画
+        draw();
+    }
+}
+
+
+//ブロックを固定
+function fixBlock() {
+    current.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                // ブロックを固定
+                board[currentPosition.y + y][currentPosition.x + x].classList.add('fixed');
+            }
+        });
+    });
+}
+
+function deleteFixedLineBlocks(){
+    tmpBoard = board;
+
+    
+    
+}
+
+
 function  rotateBlock_clockwise() {
     //右時計回り
     const rotatedBlock = [];
@@ -116,25 +196,26 @@ function  rotateBlock_clockwise() {
     for (let j = 0; j < cols; j++) {
         const newRow = [];
         for (let i = rows - 1; i >= 0; i--) {
-                newRow.push(this.block[i][j]);
+                newRow.push(current[i][j]);
             }
             rotatedBlock.push(newRow);
         }
+
     erase();
 
-    
+    tmp = current;
+    current = rotatedBlock;
     // 衝突判定
     if(checkForCollision()) {
-    // 衝突があった場合はブロックの位置を一つ戻し、固定する
+    // 衝突があった場合は回転取り消し
         
             // 新しいブロックを描画
+            current = tmp;
             draw();
         } else {
-            // 衝突がなければブロックを描画
-            current = rotatedBlock;
+            // 衝突がなければブロックを描
             draw();
         }
-    current = rotatedBlock;
 }
 
 
@@ -179,18 +260,15 @@ function moveLeft() {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowUp') {
       // 上矢印キーが押された場合の処理
-      alert('上矢印キーが押されました。');
-      rotateBlock_clockwise()
+        rotateBlock_clockwise();
     } else if (event.key === 'ArrowDown') {
       // 下矢印キーが押された場合の処理
-      alert('下矢印キーが押されました。');
+        moveDown();
     } else if (event.key === 'ArrowLeft') {
       // 左矢印キーが押された場合の処理
-      console.log('左矢印キーが押されました。');
-      moveLeft();
+        moveLeft();
     } else if (event.key === 'ArrowRight') {
       // 右矢印キーが押された場合の処理
-        alert('右矢印キーが押されました。');
         moveRight();
     }
   });
@@ -199,143 +277,3 @@ document.addEventListener('keydown', function(event) {
 
 // 1000ミリ秒ごとにテトリミノを下に移動
 setInterval(moveDown, 1000); 
-
-//衝突判定
-function checkForCollision() {
-    for(let y = 0; y < current.length; y++) {
-        for(let x = 0; x < current[y].length; x++) {
-            // ブロックが存在しない部分はスキップ
-            if(current[y][x] === 0) {
-                continue;
-            }
-
-            // 新しいブロックの位置
-            let newX = currentPosition.x + x;
-            let newY = currentPosition.y + y;
-
-            // 新しいブロックがゲームボードの底に触れているかチェック
-            if(newY >= boardHeight) {
-                return true;
-            }
-
-            // 新しいブロックの位置に他のブロックが存在しているかチェック
-            if(board[newY][newX] !== undefined && board[newY][newX].classList.contains('fixed')) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-function moveDown() {
-    // 現在のブロックを消去
-    undraw();
-
-    // ブロックの位置を更新
-    currentPosition.y++;
-
-    // 衝突判定
-    if(checkForCollision()) {
-        // 衝突があった場合はブロックの位置を一つ戻し、固定する
-        currentPosition.y--;
-        fixBlock();
-
-        // 新しいブロックを生成
-        currentPosition = {x: 4, y: 0};
-        random = Math.floor(Math.random() * tetrominoes.length);
-        current = tetrominoes[random];
-
-        // 新しいブロックを描画
-        draw();
-    } else {
-        // 衝突がなければブロックを描画
-        draw();
-    }
-}
-
-
-//ブロックを固定
-function fixBlock() {
-    current.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                // ブロックを固定
-                board[currentPosition.y + y][currentPosition.x + x].classList.add('fixed');
-            }
-        });
-    });
-}
-
-
-
-// 1000ミリ秒ごとにテトリミノを下に移動
-setInterval(moveDown, 1000); 
-
-//衝突判定
-function checkForCollision() {
-    for(let y = 0; y < current.length; y++) {
-        for(let x = 0; x < current[y].length; x++) {
-            // ブロックが存在しない部分はスキップ
-            if(current[y][x] === 0) {
-                continue;
-            }
-
-            // 新しいブロックの位置
-            let newX = currentPosition.x + x;
-            let newY = currentPosition.y + y;
-
-            // 新しいブロックがゲームボードの底に触れているかチェック
-            if(newY >= boardHeight) {
-                return true;
-            }
-
-            // 新しいブロックの位置に他のブロックが存在しているかチェック
-            if(board[newY][newX] !== undefined && board[newY][newX].classList.contains('fixed')) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-function moveDown() {
-    // 現在のブロックを消去
-    erase();
-
-    // ブロックの位置を更新
-    currentPosition.y++;
-
-    // 衝突判定
-    if(checkForCollision()) {
-        // 衝突があった場合はブロックの位置を一つ戻し、固定する
-        currentPosition.y--;
-        fixBlock();
-
-        // 新しいブロックを生成
-        currentPosition = {x: 4, y: 0};
-        random = Math.floor(Math.random() * tetrominoes.length);
-        current = tetrominoes[random];
-
-        // 新しいブロックを描画
-        draw();
-    } else {
-        // 衝突がなければブロックを描画
-        draw();
-    }
-}
-
-
-//ブロックを固定
-function fixBlock() {
-    current.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                // ブロックを固定
-                board[currentPosition.y + y][currentPosition.x + x].classList.add('fixed');
-            }
-        });
-    });
-}
-
