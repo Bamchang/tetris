@@ -98,11 +98,3 @@ const random_idx = randomNum = Math.floor(Math.random() * blocks.length);
 
 return new Block(blocks[random_idx])
 }
-/*test
-currentBlock = makeRandomBlock()
-console.log(currentBlock.block)
-currentBlock.rotateBlock_anticlockwise()
-console.log(currentBlock.block)
-currentBlock.rotateBlock_clockwise()
-console.log(currentBlock.block)
-*/
