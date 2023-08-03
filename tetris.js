@@ -20,7 +20,6 @@ for(let y = 0; y < boardHeight; y++) {
         //消滅のアニメーションが終わったら自動でクラスを消去
         cell.addEventListener("animationend", (e) =>{
             e.target.classList.remove("blink");
-            console.log("aaa")
         });
         gameBoard.appendChild(cell);
         row.push(cell);
@@ -215,12 +214,13 @@ function deleteFixedLineBlocks(){
         }
     }
 
-    //一旦ラインを消した後を描画
-    
+    //一旦ラインを消した後を描画;
+
     let numDown = 0;
     //console.log(deletedLineHeight);
     
     for(let height = boardHeight - 1; height >= 0; height--) {
+
         numDown = 0;//ダルマ落とし的に下に移動させる数
         deletedLineHeights.forEach((lineHeight) => {if(height < lineHeight){numDown++;}});
         //console.log(`line height ${numDown}`);
