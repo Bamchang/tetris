@@ -12,3 +12,21 @@
 .fixed {
   background-color: blue;
 }
+
+@keyframes blinking {
+  0% {
+    /* 初期状態: 回転なし、不透明 */
+    background-color: blue;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    /* 終了状態: 45°回転、透明 */
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.blink{
+  animation: blinking 0.3s ease forwards 
+}
