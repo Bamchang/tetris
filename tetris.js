@@ -211,6 +211,7 @@ function deleteFixedLineBlocks(){
                 boardElement.classList.add('blink');
             });
             deletedLineHeights.push(height);
+            updateScore(10);
         }
     }
 
@@ -340,9 +341,15 @@ document.addEventListener('keydown', function(event) {
     }
   });
 
-//テトリミノを落下する処理
-
-
+//　スコアを保持
+let score = 0;
+// スコアを表示するためのHTML要素を取得
+const scoreDisplay = document.getElementById('score');
+// スコアを更新して表示するための関数
+function updateScore(value){
+    score += value;
+    scoreDisplay.textContent = score;
+}
 
 draw();
 // 1000ミリ秒ごとにテトリミノを下に移動
