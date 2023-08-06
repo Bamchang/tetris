@@ -17,8 +17,13 @@ for(let y = 0; y < boardHeight; y++) {
         cell.style.border = '1px solid white';
         cell.style.boxSizing = 'border-box';
         cell.style.float = 'left';
+        //消滅のアニメーションが終わったら自動でクラスを消去
+        cell.addEventListener("animationend", (e) =>{
+            e.target.classList.remove("blink");
+        });
         gameBoard.appendChild(cell);
         row.push(cell);
+
     }
     board.push(row);
 }
@@ -86,15 +91,16 @@ let current = tetrominoes[random];
 function draw() {
     current.forEach((row, y) => {
         row.forEach((value, x) => {
-            if (value !== 0) {
+            if (value !== 0 ) {
                 // 開始位置（currentPosition）を含めた座標にブロックを描画
                 board[currentPosition.y + y][currentPosition.x + x].classList.add('block');
             }
+            
         });
     });
 }
 
-draw();
+
 
 //ゲームボードからテトリミノを削除
 function erase() {
@@ -159,12 +165,18 @@ function moveDown() {
         random = Math.floor(Math.random() * tetrominoes.length);
         current = tetrominoes[random];
 
+
         // 新しいブロックを描画
         draw();
     } else {
         // 衝突がなければブロックを描画
         draw();
     }
+    if(canBlockMove()){
+        alert("over");
+        return 1
+    }
+
 }
 
 
@@ -180,6 +192,7 @@ function fixBlock() {
     });
 }
 
+
 function deleteFixedLineBlocks(){
     tmpBoard = board;
 
@@ -192,17 +205,22 @@ function deleteFixedLineBlocks(){
         IsThereLine = tmpBoard[height].every((boardElement) => {return boardElement.classList.contains('fixed');});
         //lineができてたとき
         if(IsThereLine){
-            tmpBoard[height].forEach((boardElement) => {boardElement.classList.remove('fixed');});
+            //列消去時のアニメーション付加
+            tmpBoard[height].forEach((boardElement) => {
+                boardElement.classList.remove('fixed');
+                boardElement.classList.add('blink');
+            });
             deletedLineHeights.push(height);
         }
     }
 
-    //一旦ラインを消した後を描画
-    board = tmpBoard;
+    //一旦ラインを消した後を描画;
+
     let numDown = 0;
     //console.log(deletedLineHeight);
     
     for(let height = boardHeight - 1; height >= 0; height--) {
+
         numDown = 0;//ダルマ落とし的に下に移動させる数
         deletedLineHeights.forEach((lineHeight) => {if(height < lineHeight){numDown++;}});
         //console.log(`line height ${numDown}`);
@@ -219,7 +237,7 @@ function deleteFixedLineBlocks(){
         
         }
     }
-    board = tmpBoard;
+
 }
 
 
@@ -243,15 +261,10 @@ function  rotateBlock_clockwise() {
     current = rotatedBlock;
     // 衝突判定
     if(canBlockMove()) {
-    // 衝突があった場合は回転取り消し
-        
-            // 新しいブロックを描画
-            current = tmp;
-            draw();
-        } else {
-            // 衝突がなければブロックを描
-            draw();
-        }
+        // 衝突があった場合は回転取り消し
+        current = tmp;
+    }
+    draw();
 }
 
 
@@ -293,6 +306,24 @@ function moveLeft() {
     }
 }
 
+function isGameOver(){
+    current.forEach((row, y) => {
+        row.forEach((value, x) => {
+            //開始位置にfixedがないならok
+            //fixedとかぶったときは終了
+            //console.log(value, board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))
+            //console.log((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed')))
+            if((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))){
+                //game 終わり
+                //alert("over");
+                return true;
+            }
+        });
+    });
+    //継続
+    return false;
+}
+
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowUp') {
       // 上矢印キーが押された場合の処理
@@ -311,5 +342,8 @@ document.addEventListener('keydown', function(event) {
 
 //テトリミノを落下する処理
 
+
+
+draw();
 // 1000ミリ秒ごとにテトリミノを下に移動
 setInterval(moveDown, 1000); 
