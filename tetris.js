@@ -218,7 +218,7 @@ function deleteFixedLineBlocks(){
 
     let numDown = 0;
     //console.log(deletedLineHeight);
-    
+    setTimeout(() =>{
     for(let height = boardHeight - 1; height >= 0; height--) {
 
         numDown = 0;//ダルマ落とし的に下に移動させる数
@@ -237,6 +237,7 @@ function deleteFixedLineBlocks(){
         
         }
     }
+    }, 310)
 
 }
 
@@ -338,7 +339,7 @@ document.addEventListener('keydown', function(event) {
       // 右矢印キーが押された場合の処理
         moveRight();
     }
-  });
+});
 
 //テトリミノを落下する処理
 

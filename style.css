@@ -20,11 +20,14 @@
     transform: rotate(0deg);
     opacity: 1;
   }
+
   100% {
     /* 終了状態: 45°回転、透明 */
     transform: rotate(45deg);
     opacity: 0;
   }
+
+
 }
 
 .blink{
