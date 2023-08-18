@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import logging
 
+from blueprints import auth_blueprint
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -11,11 +13,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+#auth.pyと接続
+app.register_blueprint(auth_blueprint)
 from models import Score
 
 @app.route('/')
 def home():
-    return 'Hello, World!'
+    return "Hello, World!Ffff<a href='./login'> Go to login</a>"
 
 @app.route('/submit_score', methods=['OPTIONS'])
 def submit_score_options():
