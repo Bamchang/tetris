@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>sign up</title>
 </head>
 <body>
-    <h2>Login</h2>
+    <h2>sign up</h2>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul>
@@ -14,13 +14,12 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <form method="POST" action="{{ url_for('login') }}">
+    <form method="POST" action="{{ url_for('signup') }}">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
-        <button type="submit">Login</button>
+        <button type="submit">sign up</button>
     </form>
-    <div><a href="{{ url_for('signup') }}">sign up</a></div>
 </body>
 </html>
