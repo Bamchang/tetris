@@ -1,4 +1,4 @@
-from flask import Flask, make_response, render_template, request, redirect, url_for, flash, Blueprint,jsonify
+from flask import Flask, make_response, render_template, request, redirect, url_for, flash, Blueprint,jsonify,session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from markupsafe  import escape
 from datetime import datetime, timedelta
@@ -61,6 +61,9 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(username):
+    #sessionにusername追加
+    session["username"] = username
+    print(session)
     return User.query.get(username)
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -76,7 +79,7 @@ def signup():
             return redirect(url_for('signup'))
 
         # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-        new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        new_user = User(username=username, password=generate_password_hash(password, method='script'))
 
         # add the new user to the database
         db.session.add(new_user)
@@ -117,6 +120,7 @@ def dashboard(user_id):
 @login_required
 def logout():
     logout_user()
+    session.pop('username', None)
     return redirect(url_for('login'))
 
 logging.basicConfig(level=logging.DEBUG)
