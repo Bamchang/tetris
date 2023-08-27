@@ -374,9 +374,7 @@ function sendScore(userId, score) {
       score: score
     };
 
-    console.log('Sending score:', data); //
-  
-    fetch('http://127.0.0.1:8000/submit_score', {
+    fetch('/submit_score', {
       method: 'POST',
       mode: 'cors',
       headers: {

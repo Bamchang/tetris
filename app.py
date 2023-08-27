@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request, jsonify, render_template
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -15,6 +15,14 @@ from models import Score
 @app.route('/')
 def home():
     return 'Hello, World!'
+
+@app.route('/index')  
+def index():
+    return render_template('index.html')  
+
+@app.route('/ranking')  
+def ranking():
+    return render_template('ranking.html')  
 
 @app.route('/submit_score', methods=['OPTIONS'])
 def submit_score_options():
@@ -43,7 +51,7 @@ def submit_score():
 @app.route('/weekly_ranking', methods=['GET'])
 def weekly_ranking():
     one_week_ago = datetime.now() - timedelta(weeks=1)
-    scores = Score.query.filter(Score.timestamp > one_week_ago).order_by(Score.score.desc()).all()
+    scores = Score.query.filter(Score.timestamp > one_week_ago).order_by(Score.score.desc()).limit(5).all()
     ranking = [{"user_id": score.user_id, "score": score.score} for score in scores]
     return jsonify(ranking), 200
 
