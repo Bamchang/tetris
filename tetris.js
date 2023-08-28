@@ -168,6 +168,12 @@ function moveDown() {
 
         // 新しいブロックを描画
         draw();
+
+        // ゲームオーバー判定
+        if (isGameOver()) {
+            alert("Game Over!");
+            return; // ゲームオーバーの場合、処理を終了
+        }
     } else {
         // 衝突がなければブロックを描画
         draw();
@@ -211,6 +217,7 @@ function deleteFixedLineBlocks(){
                 boardElement.classList.add('blink');
             });
             deletedLineHeights.push(height);
+            updateScore(10);
         }
     }
 
@@ -306,6 +313,9 @@ function moveLeft() {
     }
 }
 
+// 1000ミリ秒ごとにテトリミノを下に移動
+let gameInterval = setInterval(moveDown, 1000);
+
 function isGameOver(){
     current.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -313,15 +323,19 @@ function isGameOver(){
             //fixedとかぶったときは終了
             //console.log(value, board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))
             //console.log((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed')))
+            console.log('value:', value);
             if((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))){
                 //game 終わり
                 //alert("over");
-                return true;
+                console.log('Game Over condition met!'); 
+                sendScore(111, score);
+                clearInterval(gameInterval);
+                return;
             }
         });
     });
     //継続
-    return false;
+    return;
 }
 
 document.addEventListener('keydown', function(event) {
@@ -340,10 +354,55 @@ document.addEventListener('keydown', function(event) {
     }
   });
 
-//テトリミノを落下する処理
-
-
+//　スコアを保持
+let score = 0;
+// スコアを表示するためのHTML要素を取得
+const scoreDisplay = document.getElementById('score');
+// スコアを更新して表示するための関数
+function updateScore(value){
+    score += value;
+    scoreDisplay.textContent = score;
+}
 
 draw();
-// 1000ミリ秒ごとにテトリミノを下に移動
-setInterval(moveDown, 1000); 
+ 
+
+//スコア自動送信
+function sendScore(userId, score) {
+    var data = {
+      user_id: userId,
+      score: score
+    };
+
+    console.log('Sending score:', data); //
+  
+    fetch('http://127.0.0.1:8000/submit_score', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Score submitted successfully:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// 週間ランキング取得
+function getWeeklyRanking() {
+    fetch('/weekly_ranking')
+      .then(response => response.json())
+      .then(data => {
+        // ランキングデータを処理
+        console.log('Weekly ranking:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+
