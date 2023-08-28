@@ -61,9 +61,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(username):
-    #sessionにusername追加
-    session["username"] = username
-    print(session)
+    
     return User.query.get(username)
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -86,6 +84,7 @@ def signup():
         db.session.commit()
 
         login_user(new_user)
+        session["username"] = new_user.username
         return redirect(url_for('dashboard', user_id=escape(new_user.username)))
     return render_template('signup.html')
 
@@ -106,6 +105,7 @@ def login():
         
         if user and check_password_hash(user.password, password):
             login_user(user)
+            session["username"] = user.username
             return redirect(url_for(f'dashboard', user_id=escape(user.username)))
         else:
             flash('Invalid username or password', 'error')
@@ -120,7 +120,6 @@ def dashboard(user_id):
 @login_required
 def logout():
     logout_user()
-    session.pop('username', None)
     return redirect(url_for('login'))
 
 logging.basicConfig(level=logging.DEBUG)
