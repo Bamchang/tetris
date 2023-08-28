@@ -1,6 +1,6 @@
 async function fetchRanking() {
     try {
-        const response = await fetch('http://localhost:8000/weekly_ranking');
+        const response = await fetch('/weekly_ranking');
         const data = await response.json();
         const table = document.getElementById('rankingTable');
         for (let i = 0; i < data.length && i < 5; i++) {

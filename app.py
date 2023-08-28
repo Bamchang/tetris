@@ -23,6 +23,14 @@ def home():
     return "Welcome to the Home Page <a href='./login'> Go to login</a>"
 
 
+@app.route('/index')  
+def index():
+    return render_template('index.html')  
+
+@app.route('/ranking')  
+def ranking():
+    return render_template('ranking.html')  
+
 @app.route('/submit_score', methods=['OPTIONS'])
 def submit_score_options():
     response = make_response('', 204)
@@ -50,7 +58,7 @@ def submit_score():
 @app.route('/weekly_ranking', methods=['GET'])
 def weekly_ranking():
     one_week_ago = datetime.now() - timedelta(weeks=1)
-    scores = Score.query.filter(Score.timestamp > one_week_ago).order_by(Score.score.desc()).all()
+    scores = Score.query.filter(Score.timestamp > one_week_ago).order_by(Score.score.desc()).limit(5).all()
     ranking = [{"user_id": score.user_id, "score": score.score} for score in scores]
     return jsonify(ranking), 200
 
