@@ -15,13 +15,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = 'aaaa'
 
-
 from .models import User,Score
 
 @app.route('/')
 def home():
-    return "Welcome to the Home Page <a href='./login'> Go to login</a>"
-
+    return render_template('index.html') 
 
 @app.route('/index')  
 def index():
@@ -69,7 +67,6 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(username):
-    
     return User.query.get(username)
 
 @app.route("/signup", methods=["GET", "POST"])
