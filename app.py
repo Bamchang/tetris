@@ -82,7 +82,7 @@ def signup():
             return redirect(url_for('signup'))
 
         # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-        new_user = User(username=username, password=generate_password_hash(password, method='script'))
+        new_user = User(username=username, password=generate_password_hash(password, method='scrypt'))
 
         # add the new user to the database
         db.session.add(new_user)
