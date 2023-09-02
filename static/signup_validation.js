@@ -15,7 +15,7 @@ function validateUsername() {
     const pattern = /[~`!@#$%^&*()_+[\]{};':"\\|,.<>/?]/;
     usernameMsg.textContent = ""
 
-    if (usernameForm.value.trim() === '' || usernameForm.value.match(pattern)) {
+    if (usernameForm.value.trim() === '' || usernameForm.value.match(pattern) || usernameForm.value.includes(' ')) {
         usernameForm.classList.remove('success');
         usernameForm.classList.add('error');
         //入力はあるか
@@ -24,7 +24,10 @@ function validateUsername() {
         }
         //
         if(pattern.test(usernameForm.value)){
-            usernameMsg.textContent += '空白、特殊文字を含めないでください。\n';
+            usernameMsg.textContent += '特殊文字を含めないでください。\n';
+        }
+        if(usernameForm.value.includes(' ')){
+            usernameMsg.textContent += '空白を含めないでください。\n';
         }
     } else {
         usernameForm.classList.remove('error');
