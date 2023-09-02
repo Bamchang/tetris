@@ -1,0 +1,39 @@
+#game-board {
+  position: relative;
+  height: 600px;
+  width: 300px;
+  border: 1px solid black;
+}
+
+.block {
+  background-color: #F00;
+}
+
+.fixed {
+  background-color: blue;
+}
+
+#score {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+
+@keyframes blinking {
+  0% {
+    /* 初期状態: 回転なし、不透明 */
+    background-color: blue;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    /* 終了状態: 45°回転、透明 */
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.blink{
+  animation: blinking 0.3s ease forwards 
+}
