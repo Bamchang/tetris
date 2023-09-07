@@ -1,3 +1,5 @@
+let hasSentScore = false; 
+
 //HTML内の全てのdiv要素を取得して、配列に変換
 let squares = Array.from(document.querySelectorAll('.grid div'));
 
@@ -145,8 +147,12 @@ function canBlockMove() {
     return false;
 }
 
+let gameOverFlag = false;
 
 function moveDown() {
+    // ゲームオーバーなら処理を終了
+    if (gameOverFlag) return;
+
     // 現在のブロックを消去
     erase();
 
@@ -171,18 +177,15 @@ function moveDown() {
 
         // ゲームオーバー判定
         if (isGameOver()) {
-            alert("Game Over!");
             return; // ゲームオーバーの場合、処理を終了
+            alert("Game Over!");
+            gameOverFlag = true;
+            clearInterval(gameInterval);
         }
     } else {
         // 衝突がなければブロックを描画
         draw();
     }
-    if(canBlockMove()){
-        alert("over");
-        return 1
-    }
-
 }
 
 
@@ -315,20 +318,26 @@ function moveLeft() {
 
 // 1000ミリ秒ごとにテトリミノを下に移動
 let gameInterval = setInterval(moveDown, 1000);
+let gameOverCounter = 0;  // isGameOverが呼び出された回数を数える
 
 function isGameOver(){
+    if(gameOverFlag) return;
     current.forEach((row, y) => {
         row.forEach((value, x) => {
             //開始位置にfixedがないならok
             //fixedとかぶったときは終了
             //console.log(value, board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))
             //console.log((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed')))
-            console.log('value:', value);
             if((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))){
+                gameOverCounter++;
+                console.log("isGameOver called times:", gameOverCounter);
                 //game 終わり
                 //alert("over");
-                console.log('Game Over condition met!'); 
+                gameOverFlag = true; 
+                console.log('Game Over condition met!');
+                console.log("Before sendScore"); 
                 sendScore(111, score);
+                console.log("After sendScore");
                 clearInterval(gameInterval);
                 return;
             }
@@ -367,8 +376,13 @@ function updateScore(value){
 draw();
  
 
+let sendScoreCounter = 0;
 //スコア自動送信
 function sendScore(userId, score) {
+    if(hasSentScore) return;
+    hasSentScore = true;
+    sendScoreCounter++;
+    console.log("sendScore called times:", sendScoreCounter);
     var data = {
       user_id: userId,
       score: score
@@ -403,4 +417,3 @@ function getWeeklyRanking() {
         console.error('Error:', error);
       });
 }
-
