@@ -55,6 +55,7 @@ function validatePassword() {
         passwordMsg.textContent = 'OK ✅';
     }
 }
+
 let preventEvent = true;
 form.addEventListener('submit', function(event) {
     event.preventDefault(); // フォームの実際の送信を防ぐ

@@ -7,7 +7,6 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 
-
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
@@ -21,8 +20,8 @@ from .models import User,Score
 def home():
     return render_template('index.html') 
 
-@app.route('/index')  
-def index():
+@app.route('/index<user_id>')  
+def index(user_id):
     return render_template('index.html')  
 
 @app.route('/ranking')  
@@ -119,7 +118,7 @@ def login():
 @app.route('/dashboard/<user_id>')
 @login_required
 def dashboard(user_id):
-    return f"Welcome to the Dashboard, {user_id}!"
+    return render_template("dashboard")
 
 @app.route('/logout')
 @login_required
