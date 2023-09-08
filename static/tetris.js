@@ -298,8 +298,7 @@ function moveLeft() {
     }
 }
 
-// 1000ミリ秒ごとにテトリミノを下に移動
-let gameInterval = setInterval(moveDown, 1000);
+
 let gameOverCounter = 0;  // isGameOverが呼び出された回数を数える
 
 function isGameOver(){
@@ -450,4 +449,4 @@ startBtn.addEventListener("click", ()=>{
 draw();
 
 })
-}
+
