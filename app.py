@@ -1,5 +1,5 @@
 from flask import Flask, make_response, render_template, request, redirect, url_for, flash, Blueprint,jsonify,session
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user,current_user
 from markupsafe  import escape
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
@@ -65,8 +65,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 @login_manager.user_loader
-def load_user(username):
-    return User.query.get(username)
+def load_user(id):
+    return User.query.get(id)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -87,9 +87,9 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        login_user(new_user)
+        login_user(new_user.id)
         session["username"] = new_user.username
-        return redirect(url_for('dashboard', user_id=escape(new_user.username)))
+        return redirect(url_for("home"))
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -108,17 +108,14 @@ def login():
             return render_template('login.html')
         
         if user and check_password_hash(user.password, password):
-            login_user(user)
+            login_user(user.id)
             session["username"] = user.username
-            return redirect(url_for(f'dashboard', user_id=escape(user.username)))
+            session["user_id"] = user.user_id
+            return redirect(url_for("home"))
         else:
-            flash('Invalid username or password', 'error')
+            flash('Wrong password', 'error')
     return render_template('login.html')
 
-@app.route('/dashboard/<user_id>')
-@login_required
-def dashboard(user_id):
-    return render_template("dashboard")
 
 @app.route('/logout')
 @login_required

@@ -45,7 +45,7 @@ body, h1, h2, ul, li, form {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     display: flex; /* Apply flexbox to the body for layout control */
-    justify-content: center; /* Center content horizontally */
+    justify-content: space-evenly; /* Center content horizontally */
     align-items: center; 
 }
 
@@ -74,9 +74,8 @@ body, h1, h2, ul, li, form {
     font-weight: bold;
 }
 
-#login {
+#login, #user {
     width: 300px;
-    margin: 0 10%;
     background-color: #fff;
     border: 1px solid #ccc;
     padding: 20px;

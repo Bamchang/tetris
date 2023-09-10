@@ -5,17 +5,17 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='signup.css') }}">
 </head>
 <body>
-    <h2>sign up</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li style="color: red;">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
     <form id="signup_form" name="signup_form" method="POST" action="{{ url_for('signup') }}">
+        <h2>sign up</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li style="color: red;">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
         <div id="username_validation_msg"></div>

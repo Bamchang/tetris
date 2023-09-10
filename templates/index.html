@@ -15,8 +15,9 @@
     {% if current_user.is_authenticated %}
     <div id="user">
         <h3>{{ current_user.username }}
-        <h3>Your Scores</h3>
-        <h3>View Ranking</h3>
+            
+        <!-- <h3>Your Scores</h3> -->
+        <h3><a href="{{ url_for('ranking') }}">View Ranking</h3>
     </div>
 
     {% else %}
@@ -47,7 +48,7 @@
 
         <a href="{{ url_for('signup')}}"> Go to signup</a>
     {% endif %}
-        </div>
+    </div>
     </div>
     <script src="{{ url_for('static', filename='tetris.js') }}"></script>
 </body>
