@@ -1,3 +1,5 @@
+let hasSentScore = false; 
+
 //HTML内の全てのdiv要素を取得して、配列に変換
 let squares = Array.from(document.querySelectorAll('.grid div'));
 
@@ -6,27 +8,6 @@ const gameBoard = document.getElementById('game-board');
 let   board = [];
 const boardWidth = 10;  // 10 columns
 const boardHeight = 20; // 20 rows
-
-// ゲームボードの描画
-for(let y = 0; y < boardHeight; y++) {
-    let row = [];
-    for(let x = 0; x < boardWidth; x++) {
-        const cell = document.createElement('div');
-        cell.style.width = '30px';
-        cell.style.height = '30px';
-        cell.style.border = '1px solid white';
-        cell.style.boxSizing = 'border-box';
-        cell.style.float = 'left';
-        //消滅のアニメーションが終わったら自動でクラスを消去
-        cell.addEventListener("animationend", (e) =>{
-            e.target.classList.remove("blink");
-        });
-        gameBoard.appendChild(cell);
-        row.push(cell);
-
-    }
-    board.push(row);
-}
 
 //ブロックの定義
 const tetrominoes = [
@@ -80,12 +61,6 @@ const tetrominoes = [
     ]
 ];
 
-//テトリミノの初期座標を定義
-let currentPosition = {x: 4, y: 0};
-let currentRotation = 0;
-
-let random = Math.floor(Math.random()*tetrominoes.length);
-let current = tetrominoes[random];
 
 //ゲームボードにテトリミノを描写
 function draw() {
@@ -145,8 +120,12 @@ function canBlockMove() {
     return false;
 }
 
+let gameOverFlag = false;
 
 function moveDown() {
+    // ゲームオーバーなら処理を終了
+    if (gameOverFlag) return;
+
     // 現在のブロックを消去
     erase();
 
@@ -171,15 +150,21 @@ function moveDown() {
 
         // ゲームオーバー判定
         if (isGameOver()) {
-            alert("Game Over!");
             return; // ゲームオーバーの場合、処理を終了
+            alert("Game Over!");
+            gameOverFlag = true;
+            clearInterval(gameInterval);
+            //restat btn 
+            startBtn.style.removeProperty("display");
         }
     } else {
         // 衝突がなければブロックを描画
         draw();
     }
     if(canBlockMove()){
+        draw();
         alert("over");
+        startBtn.style.removeProperty("display");
         return 1
     }
 
@@ -313,22 +298,27 @@ function moveLeft() {
     }
 }
 
-// 1000ミリ秒ごとにテトリミノを下に移動
-let gameInterval = setInterval(moveDown, 1000);
+
+let gameOverCounter = 0;  // isGameOverが呼び出された回数を数える
 
 function isGameOver(){
+    if(gameOverFlag) return;
     current.forEach((row, y) => {
         row.forEach((value, x) => {
             //開始位置にfixedがないならok
             //fixedとかぶったときは終了
             //console.log(value, board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))
             //console.log((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed')))
-            console.log('value:', value);
             if((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))){
+                gameOverCounter++;
+                console.log("isGameOver called times:", gameOverCounter);
                 //game 終わり
                 //alert("over");
-                console.log('Game Over condition met!'); 
+                gameOverFlag = true; 
+                console.log('Game Over condition met!');
+                console.log("Before sendScore"); 
                 sendScore(111, score);
+                console.log("After sendScore");
                 clearInterval(gameInterval);
                 return;
             }
@@ -364,11 +354,14 @@ function updateScore(value){
     scoreDisplay.textContent = score;
 }
 
-draw();
- 
 
+let sendScoreCounter = 0;
 //スコア自動送信
 function sendScore(userId, score) {
+    if(hasSentScore) return;
+    hasSentScore = true;
+    sendScoreCounter++;
+    console.log("sendScore called times:", sendScoreCounter);
     var data = {
       user_id: userId,
       score: score
@@ -403,4 +396,57 @@ function getWeeklyRanking() {
         console.error('Error:', error);
       });
 }
+
+function initBoard(){
+
+    for (let Y=0; Y < board.length; Y++){ 
+        for (let X=0; X < board[0].length; X++){
+            console.log(board[Y][X])  
+        if(board[Y][X].classList.contains('fixed')) {
+            board[Y][X].classList.remove("fixed");
+               
+        }
+        }
+    }
+}
+let startBtn = document.getElementById("start-btn")
+
+//テトリミノの初期座標を定義
+let currentPosition = {x: 4, y: 0};
+let currentRotation = 0;
+
+let random = Math.floor(Math.random()*tetrominoes.length);
+let current = tetrominoes[random];
+
+// 1000ミリ秒ごとにテトリミノを下に移動
+let gameInterval;
+
+ // ゲームボードの描画
+ for(let y = 0; y < boardHeight; y++) {
+    let row = [];
+    for(let x = 0; x < boardWidth; x++) {
+        const cell = document.createElement('div');
+        cell.style.width = '10%';
+        cell.style.height = '5%';
+        cell.style.border = '1px solid white';
+        cell.style.boxSizing = 'border-box';
+        cell.style.float = 'left';
+        //消滅のアニメーションが終わったら自動でクラスを消去
+        cell.addEventListener("animationend", (e) =>{
+            e.target.classList.remove("blink");
+        });
+        gameBoard.appendChild(cell);
+        row.push(cell);
+}
+board.push(row);
+}
+
+startBtn.addEventListener("click", ()=>{
+    startBtn.style.display = "none";
+    initBoard()
+    gameInterval = setInterval(moveDown, 1000);
+
+draw();
+
+})
 

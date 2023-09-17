@@ -1,7 +1,4 @@
 #game-board {
-  position: relative;
-  height: 600px;
-  width: 300px;
   border: 1px solid black;
 }
 
@@ -36,4 +33,126 @@
 
 .blink{
   animation: blinking 0.3s ease forwards 
+}
+
+/* Reset some default styles for better consistency */
+body, h1, h2, ul, li, form {
+    margin: 0;
+    padding: 0;
+}
+
+#tetris-main-container {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex; /* Apply flexbox to the body for layout control */
+    justify-content: space-evenly; /* Center content horizontally */
+    align-items: center; 
+}
+
+#tetris-game {
+    width: 250px;
+    height: 490px;
+    margin: 0 5%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 30px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#game-board {
+    width: 100%;
+    height: 90%;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+#score {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#login, #user {
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    color: red;
+}
+
+#login-form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#start-btn {
+  background-color: #007bff; /* Button background color */
+  color: #fff; /* Text color */
+  padding: 10px 20px; /* Padding (top and bottom, left and right) */
+  margin-bottom:  5px;
+  border: none; /* Remove button border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor on hover */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+/* Define a hover effect for the button */
+#start-btn:hover {
+  background-color: #0056b3; /* Darker background color on hover */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#login-btn{
+  display: flex; /* Apply flexbox to the form container */
+  flex-direction: column; /* Stack child elements vertically */
+  align-items: center; 
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
 }

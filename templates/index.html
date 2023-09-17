@@ -5,29 +5,51 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div id="game-board"></div>
-    Your score is  <span id="score">0</span>
+    <div id="tetris-main-container">
+    <div id="tetris-game">
+        <button id="start-btn">Game START</button>
+        <div id="game-board"></div>
+        Your score is  <span id="score">0</span>
+    </div>
+    
+    {% if current_user.is_authenticated %}
+    <div id="user">
+        <h3>{{ current_user.username }}
+            
+        <!-- <h3>Your Scores</h3> -->
+        <h3><a href="{{ url_for('ranking') }}">View Ranking</h3>
+    </div>
 
-    <h2>Login</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li style="color: red;">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="POST" action="{{ url_for('login') }}">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Login</button>
-    </form>
-    return "Welcome to the Home Page <a href="{{ url_for('signup')}}"> Go to login</a>
+    {% else %}
+    <div id="login">
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li style="color: red;">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 
 
+        <div id="login-form">
+            <form method="POST" action="{{ url_for('login') }}">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password"  required>
+                <div id="login-btn">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+
+        <a href="{{ url_for('signup')}}"> Go to signup</a>
+    {% endif %}
+    </div>
+    </div>
     <script src="{{ url_for('static', filename='tetris.js') }}"></script>
 </body>
 </html>

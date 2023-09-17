@@ -1,0 +1,84 @@
+.error {
+    border: 2px solid red;
+}
+
+.success {
+    border: 2px solid green;
+}
+
+.error-message {
+    color: red;
+}
+
+.success-message {
+    color: green;
+}
+
+/* Reset some default styles */
+body, h2, label, input, button {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Header styling */
+h2 {
+    text-align: center;
+    padding: 20px 0;
+    color: #007bff;
+}
+
+/* Form container styling */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Label and input field styling */
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+/* Button styling */
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Validation message styling */
+#username_validation_msg,
+#password_validation_msg {
+    color: red;
+    margin-bottom: 5px;
+}
