@@ -298,10 +298,15 @@ function moveLeft() {
     }
 }
 
-
-let gameOverCounter = 0;  // isGameOverが呼び出された回数を数える
-
 function isGameOver(){
+    const userContainer = document.querySelector("#user h3");
+
+    // ユーザー名を取得
+    let username;
+    if (userContainer) {
+        username = userContainer.textContent.trim(); // trim()で余分な空白を除去
+    }
+
     if(gameOverFlag) return;
     current.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -310,15 +315,8 @@ function isGameOver(){
             //console.log(value, board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))
             //console.log((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed')))
             if((value != 0) && (board[currentPosition.y + y][currentPosition.x + x].classList.contains('fixed'))){
-                gameOverCounter++;
-                console.log("isGameOver called times:", gameOverCounter);
-                //game 終わり
-                //alert("over");
-                gameOverFlag = true; 
-                console.log('Game Over condition met!');
-                console.log("Before sendScore"); 
-                sendScore(111, score);
-                console.log("After sendScore");
+                gameOverFlag = true;  
+                sendScore(username, score);
                 clearInterval(gameInterval);
                 return;
             }
