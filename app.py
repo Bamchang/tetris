@@ -59,14 +59,13 @@ def weekly_ranking():
     ranking = [{"user_id": score.user_id, "score": score.score} for score in scores]
     return jsonify(ranking), 200
 
-
 #認証関係
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(id)
+def load_user(user):
+    return User.query.get(user)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -87,7 +86,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        login_user(new_user.id)
+        login_user(new_user)
         session["username"] = new_user.username
         return redirect(url_for("home"))
     return render_template('signup.html')
@@ -108,14 +107,13 @@ def login():
             return render_template('login.html')
         
         if user and check_password_hash(user.password, password):
-            login_user(user.id)
+            login_user(user)
             session["username"] = user.username
             session["user_id"] = user.user_id
             return redirect(url_for("home"))
         else:
             flash('Wrong password', 'error')
     return render_template('login.html')
-
 
 @app.route('/logout')
 @login_required
